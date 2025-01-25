@@ -1,0 +1,20 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: auth_service
+          uri: lb://auth-service
+          predicates:
+            - Path=/auth/**
+        - id: book_storage_service
+          uri: lb://book-storage-service
+          predicates:
+            - Path=/books/book-storage/**
+        - id: book_tracker_service
+          uri: lb://book-tracker-service
+          predicates:
+            - Path=/books/book-tracker/**
+eureka:
+  client:
+    service-url:
+      defaultZone : http://localhost:8761/eureka/
