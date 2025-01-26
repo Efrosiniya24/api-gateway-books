@@ -64,4 +64,22 @@ class GatewayControllerTest {
         verify(restTemplate).exchange(url, HttpMethod.GET, new HttpEntity<>(headers), String.class);
     }
 
+    @Test
+    void proxyToBookTrackerTest_thenReturnError() {
+        //given
+        HttpHeaders headers = new HttpHeaders();
+        String endpoint = "/free-books";
+        String url = "http://localhost:8081/books/book-tracker/" + endpoint;
+
+        //when
+        when(restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<>(headers), String.class))
+                .thenReturn(ResponseEntity.status(500).build());
+
+        //then
+        ResponseEntity<String> response = gatewayController.proxyToBookTracker(endpoint, headers);
+        assertEquals(500, response.getStatusCodeValue());
+
+        verify(restTemplate).exchange(url, HttpMethod.GET, new HttpEntity<>(headers), String.class);
+    }
+
 }
