@@ -42,10 +42,24 @@ class JwtAuthenticationFilterTest {
     }
 
     @Test
-    void whenNoAuthorizationHeader_thenUnauthorized() throws Exception {
+    void authHeaderIsNullTest() throws Exception {
         //given
         //when
         when(request.getHeader("Authorization")).thenReturn(null);
+
+        //then
+        Boolean result = jwtAuthenticationFilter.preHandle(request, response, null);
+        assertFalse(result);
+
+        verify(response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        verify(writer).write("Missing or invalid Authorization header");
+    }
+
+    @Test
+    void notBearerTokenTest() throws Exception {
+        //given
+        //when
+        when(request.getHeader("Authorization")).thenReturn("IsNotBearerToken");
 
         //then
         Boolean result = jwtAuthenticationFilter.preHandle(request, response, null);
