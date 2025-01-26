@@ -66,6 +66,7 @@ class JwtAuthenticationFilterTest {
         assertFalse(result);
 
         verify(response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        verify(writer).write("Missing or invalid Authorization header");
     }
 
 }
