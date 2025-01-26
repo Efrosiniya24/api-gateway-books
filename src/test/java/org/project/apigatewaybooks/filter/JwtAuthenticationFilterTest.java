@@ -49,7 +49,7 @@ class JwtAuthenticationFilterTest {
         when(response.getWriter()).thenReturn(writer);
 
         //then
-        Boolean result = jwtAuthenticationFilter.preHandle(request, response, null);
+        boolean result = jwtAuthenticationFilter.preHandle(request, response, null);
         assertFalse(result);
 
         verify(response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -64,7 +64,7 @@ class JwtAuthenticationFilterTest {
         when(response.getWriter()).thenReturn(writer);
 
         //then
-        Boolean result = jwtAuthenticationFilter.preHandle(request, response, null);
+        boolean result = jwtAuthenticationFilter.preHandle(request, response, null);
         assertFalse(result);
 
         verify(response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -87,7 +87,7 @@ class JwtAuthenticationFilterTest {
         )).thenReturn(mockResponse);
 
         //then
-        Boolean result = jwtAuthenticationFilter.preHandle(request, response, null);
+        boolean result = jwtAuthenticationFilter.preHandle(request, response, null);
         assertTrue(result);
 
         verify(response, never()).setStatus(anyInt());
@@ -110,7 +110,7 @@ class JwtAuthenticationFilterTest {
         )).thenReturn(mockResponse);
 
         //then
-        Boolean result = jwtAuthenticationFilter.preHandle(request, response, null);
+        boolean result = jwtAuthenticationFilter.preHandle(request, response, null);
         assertFalse(result);
 
         verify(response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
