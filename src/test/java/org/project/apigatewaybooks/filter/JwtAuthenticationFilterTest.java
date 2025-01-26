@@ -92,4 +92,28 @@ class JwtAuthenticationFilterTest {
 
         verify(response, never()).setStatus(anyInt());
     }
+
+    @Test
+    void tokenIsNotValidTest() throws Exception {
+        //given
+        String token = "token";
+        ResponseEntity<String> mockResponse = ResponseEntity.status(401).body("Unauthorized");
+
+        //when
+        when(response.getWriter()).thenReturn(writer);
+        when(request.getHeader("Authorization")).thenReturn("Bearer " + token);
+        when(restTemplate.exchange(
+                eq("http://auth-service/auth/validate"),
+                eq(HttpMethod.GET),
+                any(),
+                eq(String.class)
+        )).thenReturn(mockResponse);
+
+        //then
+        Boolean result = jwtAuthenticationFilter.preHandle(request, response, null);
+        assertFalse(result);
+
+        verify(response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        verify(writer).write("Invalid token");
+    }
 }
