@@ -45,6 +45,25 @@ class GatewayControllerTest {
     }
 
     @Test
+    void whenProxyToBookStorage_thenReturnError() {
+        //given
+        HttpHeaders headers = new HttpHeaders();
+        String endpoint = "/all-books";
+        String url = "http://localhost:8082/books/book-storage/" + endpoint;
+
+        //when
+        when(restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<>(headers), String.class))
+                .thenReturn(ResponseEntity.status(500).build());
+
+        //then
+        ResponseEntity<String> response = gatewayController.proxyToBookStorage(endpoint, headers);
+
+        assertEquals(500, response.getStatusCodeValue());
+
+        verify(restTemplate).exchange(url, HttpMethod.GET, new HttpEntity<>(headers), String.class);
+    }
+
+    @Test
     void proxyToBookTrackerTest_thenCallRestTemplate() {
         //given
         HttpHeaders headers = new HttpHeaders();
