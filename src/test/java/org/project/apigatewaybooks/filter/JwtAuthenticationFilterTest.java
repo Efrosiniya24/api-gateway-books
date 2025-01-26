@@ -36,16 +36,17 @@ class JwtAuthenticationFilterTest {
     @Mock
     private PrintWriter writer;
 
-    @BeforeEach
-    void setUp() throws Exception {
-        when(response.getWriter()).thenReturn(writer);
-    }
+//    @BeforeEach
+//    void setUp() throws Exception {
+//        when(response.getWriter()).thenReturn(writer);
+//    }
 
     @Test
     void authHeaderIsNullTest() throws Exception {
         //given
         //when
         when(request.getHeader("Authorization")).thenReturn(null);
+        when(response.getWriter()).thenReturn(writer);
 
         //then
         Boolean result = jwtAuthenticationFilter.preHandle(request, response, null);
@@ -60,6 +61,7 @@ class JwtAuthenticationFilterTest {
         //given
         //when
         when(request.getHeader("Authorization")).thenReturn("IsNotBearerToken");
+        when(response.getWriter()).thenReturn(writer);
 
         //then
         Boolean result = jwtAuthenticationFilter.preHandle(request, response, null);
@@ -69,4 +71,25 @@ class JwtAuthenticationFilterTest {
         verify(writer).write("Missing or invalid Authorization header");
     }
 
+    @Test
+    void tokenIsValidTest() throws Exception {
+        //given
+        String token = "token";
+        ResponseEntity<String> mockResponse = ResponseEntity.ok("Success");
+
+        //when
+        when(request.getHeader("Authorization")).thenReturn("Bearer " + token);
+        when(restTemplate.exchange(
+                eq("http://auth-service/auth/validate"),
+                eq(HttpMethod.GET),
+                any(),
+                eq(String.class)
+        )).thenReturn(mockResponse);
+
+        //then
+        Boolean result = jwtAuthenticationFilter.preHandle(request, response, null);
+        assertTrue(result);
+
+        verify(response, never()).setStatus(anyInt());
+    }
 }
