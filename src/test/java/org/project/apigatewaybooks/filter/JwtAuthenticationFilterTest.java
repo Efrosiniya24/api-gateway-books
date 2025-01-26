@@ -36,11 +36,6 @@ class JwtAuthenticationFilterTest {
     @Mock
     private PrintWriter writer;
 
-//    @BeforeEach
-//    void setUp() throws Exception {
-//        when(response.getWriter()).thenReturn(writer);
-//    }
-
     @Test
     void authHeaderIsNullTest() throws Exception {
         //given
