@@ -1,0 +1,86 @@
+version: '3.8'
+
+services:
+  eureka-service:
+    build:
+      context: ./eureka-service
+    ports:
+      - "8761:8761"
+    networks:
+      - books-network
+
+  book-storage-service:
+    build:
+      context: ./book-storage-service
+    ports:
+      - "8082:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://book-storage-db:5432/books
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=1111
+      - EUREKA_SERVER_URL=http://eureka-service:8761/eureka/
+    networks:
+      - books-network
+    depends_on:
+      - postgres
+      - eureka-service
+      - auth-service
+      - book-tracker-service
+
+  book-tracker-service:
+    build:
+      context: ./book-tracker-service
+    ports:
+      - "8081:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://book-storage-db:5432/book_tracker
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=1111
+      - EUREKA_SERVER_URL=http://eureka-service:8761/eureka/
+    networks:
+      - books-network
+    depends_on:
+      - postgres
+      - eureka-service
+      - auth-service
+      - book-storage-service
+
+  auth-service:
+    build:
+      context: ./auth-service
+    ports:
+      - "8083:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://book-storage-db:5432/users_book
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=1111
+      - EUREKA_SERVER_URL=http://eureka-service:8761/eureka/
+    networks:
+      - books-network
+    depends_on:
+      - postgres
+      - eureka-service
+      - api-gateway
+
+  api-gateway:
+    build:
+      context: ./api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - EUREKA_SERVER_URL=http://eureka-service:8761/eureka/
+    networks:
+      - books-network
+    depends_on:
+      - eureka-service
+      - book-storage-service
+      - book-tracker-service
+      - auth-service
+
+networks:
+  books-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
+    driver: local
