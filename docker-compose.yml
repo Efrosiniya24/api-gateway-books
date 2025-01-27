@@ -1,9 +1,7 @@
-version: '3.8'
-
 services:
   eureka-service:
     build:
-      context: ./eureka-service
+      context: ../Eureka-service-books
     ports:
       - "8761:8761"
     networks:
@@ -11,7 +9,7 @@ services:
 
   book-storage-service:
     build:
-      context: ./book-storage-service
+      context: ../book-storage-service
     ports:
       - "8082:8080"
     environment:
@@ -22,14 +20,12 @@ services:
     networks:
       - books-network
     depends_on:
-      - postgres
       - eureka-service
       - auth-service
-      - book-tracker-service
 
   book-tracker-service:
     build:
-      context: ./book-tracker-service
+      context: ../book-tracker-service
     ports:
       - "8081:8080"
     environment:
@@ -40,14 +36,12 @@ services:
     networks:
       - books-network
     depends_on:
-      - postgres
       - eureka-service
       - auth-service
-      - book-storage-service
 
   auth-service:
     build:
-      context: ./auth-service
+      context: ../auth-service
     ports:
       - "8083:8080"
     environment:
@@ -58,13 +52,11 @@ services:
     networks:
       - books-network
     depends_on:
-      - postgres
       - eureka-service
-      - api-gateway
 
   api-gateway:
     build:
-      context: ./api-gateway
+      context: ../api-gateway-books
     ports:
       - "8080:8080"
     environment:
@@ -73,14 +65,8 @@ services:
       - books-network
     depends_on:
       - eureka-service
-      - book-storage-service
-      - book-tracker-service
-      - auth-service
 
 networks:
   books-network:
     driver: bridge
 
-volumes:
-  postgres-data:
-    driver: local
