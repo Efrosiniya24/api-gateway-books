@@ -3,7 +3,7 @@ LABEL authors="Frosya"
 
 FROM openjdk:17-jdk-slim
 FROM gradle:8.12-jdk21 AS BUILD
-EXPOSE 8083
+EXPOSE 8080
 
 WORKDIR /app/
 
