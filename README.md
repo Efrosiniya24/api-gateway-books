@@ -22,3 +22,6 @@
 11. Для тестирования API использовать следующие ссылки со Swagger UI:  
     http://localhost:8081/swagger-ui/index.html  
     http://localhost:8082/swagger-ui/index.html
+
+**Коллекция запросов в Postman доступна по следующей ссылке:**
+https://www.postman.com/supply-cosmonaut-84128106/modsen/collection/vx335h5/books?action=share&creator=33698278
